@@ -4,6 +4,7 @@ import Home from '../pages/Home';
 import EditarPerfil from '../pages/EditarPerfil';
 import Agendamento from '../pages/Agendamento';
 import Admin from '../pages/Admin';
+import MeusAgendamentos from '../pages/MeusAgendamentos';
 import PrivateRoute from '../components/PrivateRoute';
 
 const router = createBrowserRouter([
@@ -26,6 +27,10 @@ const router = createBrowserRouter([
   {
     path: '/admin',
     element: <PrivateRoute><Admin /></PrivateRoute>
+  },
+  {
+    path: '/meus-agendamentos',
+    element: <PrivateRoute><MeusAgendamentos /></PrivateRoute>
   }
 ]);
 

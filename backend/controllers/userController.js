@@ -55,7 +55,9 @@ exports.deleteUser = async (req, res) => {
 // Obter perfil do usuário
 exports.getUserProfile = async (req, res) => {
     try {
-        const userDoc = await db.collection('users').doc(req.user.uid).get();
+        const userDoc = await db.collection('users')
+            .doc(req.user.uid)
+            .get({ source: 'cache' });
 
         if (!userDoc.exists) {
             return res.status(404).json({ 
@@ -74,4 +76,33 @@ exports.getUserProfile = async (req, res) => {
             message: error.message 
         });
     }
+};
+
+exports.login = async (req, res) => {
+  try {
+    const { token } = req.body;
+    const decodedToken = await admin.auth().verifyIdToken(token);
+    
+    req.session.userId = decodedToken.uid;
+    req.session.email = decodedToken.email;
+    
+    res.json({ 
+      success: true, 
+      message: 'Login realizado com sucesso' 
+    });
+  } catch (error) {
+    res.status(401).json({ 
+      success: false, 
+      message: error.message 
+    });
+  }
+};
+
+exports.logout = (req, res) => {
+  req.session.destroy();
+  res.clearCookie('connect.sid');
+  res.json({ 
+    success: true, 
+    message: 'Logout realizado com sucesso' 
+  });
 }; 

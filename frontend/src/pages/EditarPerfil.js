@@ -1,142 +1,111 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { auth, db } from '../services/firebase';
-import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs, } from 'firebase/firestore';
+import { doc, getDoc, updateDoc, deleteDoc, collection, query, where, getDocs, serverTimestamp } from 'firebase/firestore';
 import { updateEmail, deleteUser } from 'firebase/auth';
 import BackButton from '../components/BackButton';
 import '../styles/editar-perfil.css';
-function EditarPerfil() {
+import { useAuth } from '../contexts/AuthContext';
+import ConfirmDeleteModal from '../components/ConfirmDeleteModal';
 
-  const [novoEmail, setNovoEmail] = useState('');
-  const [telefone, setTelefone] = useState('');
-  const [loading, setLoading] = useState(true);
+function EditarPerfil() {
+  const [formData, setFormData] = useState({
+    email: '',
+    telefone: ''
+  });
+  const [loading, setLoading] = useState(false);
   const [error, setError] = useState('');
   const [showConfirmDelete, setShowConfirmDelete] = useState(false);
-  const [isOnline, setIsOnline] = useState(navigator.onLine);
   const navigate = useNavigate();
-
-  // Monitor de status online/offline
-  useEffect(() => {
-    const handleOnline = () => setIsOnline(true);
-    const handleOffline = () => setIsOnline(false);
-
-    window.addEventListener('online', handleOnline);
-    window.addEventListener('offline', handleOffline);
-
-    return () => {
-      window.removeEventListener('online', handleOnline);
-      window.removeEventListener('offline', handleOffline);
-    };
-  }, []);
+  const { user } = useAuth();
 
   useEffect(() => {
     const fetchUserData = async () => {
-      setLoading(true);
+      if (!user) return;
+      
       try {
-        const user = auth.currentUser;
-        if (!user) {
-          setLoading(false);
-          navigate('/login');
-          return;
-        }
-
-        const docRef = doc(db, "users", user.uid);
-        const docSnap = await getDoc(docRef);
-        
-        if (docSnap.exists()) {
-          const userData = docSnap.data();
-          setNovoEmail(user.email || '');
-          setTelefone(userData.telefone || '');
-        } else {
-          // Se o documento não existe, crie um novo
-          await updateDoc(doc(db, "users", user.uid), {
-            email: user.email,
-            telefone: ''
+        const userDoc = await getDoc(doc(db, 'users', user.uid));
+        if (userDoc.exists()) {
+          const userData = userDoc.data();
+          setFormData({
+            email: userData.email || '',
+            telefone: userData.telefone || ''
           });
-          setNovoEmail(user.email || '');
-          setTelefone('');
         }
       } catch (error) {
-        console.error('Erro ao buscar dados:', error);
-        if (error.message.includes('offline')) {
-          setError("Você está offline. Os dados serão atualizados quando houver conexão.");
-        } else {
-          setError("Erro ao buscar dados: " + error.message);
-        }
+        console.error('Erro ao carregar dados:', error);
+        setError('Erro ao carregar dados do usuário');
       } finally {
         setLoading(false);
       }
     };
 
-    const unsubscribe = auth.onAuthStateChanged((user) => {
-      if (user) {
-        fetchUserData();
-      } else {
-        setLoading(false);
-        navigate('/login');
-      }
-    });
-
-    return () => unsubscribe();
-  }, [navigate]);
+    fetchUserData();
+  }, [user]);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setError('');
-    const user = auth.currentUser;
-    if (!user) return;
+    setLoading(true);
 
     try {
-      if (novoEmail !== user.email) {
-        await updateEmail(user, novoEmail);
+      if (!user) throw new Error('Usuário não autenticado');
+
+      // Atualiza email no Authentication se necessário
+      if (formData.email !== user.email) {
+        await updateEmail(user, formData.email);
       }
-      
+
+      // Atualiza dados no Firestore
       await updateDoc(doc(db, "users", user.uid), {
-        email: novoEmail,
-        telefone: telefone
+        email: formData.email,
+        telefone: formData.telefone,
+        updatedAt: serverTimestamp()
       });
-      
-      navigate('/');
+
+      navigate('/perfil');
     } catch (error) {
       console.error('Erro:', error);
-      if (error.code === 'auth/requires-recent-login') {
-        setError("Por favor, faça login novamente para alterar o email");
-        navigate('/login');
-      } else {
-        setError("Erro ao atualizar perfil: " + error.message);
-      }
+      setError(error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   const handleDeleteAccount = async () => {
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        // Deletar dados do Firestore
-        await deleteDoc(doc(db, "users", user.uid));
-        // Deletar usuário do Authentication
-        await deleteUser(user);
-        // Deletar agendamentos do usuário
-        const agendamentosRef = collection(db, 'agendamentos');
-        const q = query(agendamentosRef, where("clienteId", "==", user.uid));
-        const querySnapshot = await getDocs(q);
-        querySnapshot.forEach(async (doc) => {
-          await deleteDoc(doc.ref);
-        });
-        navigate('/login');
-      } catch (error) {
-        console.error('Erro ao deletar conta:', error);
-        setError("Erro ao deletar conta: " + error.message);
-      }
+    setError('');
+    setLoading(true);
+    
+    try {
+      const currentUser = auth.currentUser;
+      if (!currentUser) throw new Error('Usuário não autenticado');
+
+      // Primeiro deletar agendamentos
+      const agendamentosRef = collection(db, 'agendamentos');
+      const q = query(agendamentosRef, where("clienteId", "==", currentUser.uid));
+      const querySnapshot = await getDocs(q);
+      
+      const deletePromises = querySnapshot.docs.map(doc => deleteDoc(doc.ref));
+      await Promise.all(deletePromises);
+
+      // Depois deletar dados do usuário no Firestore
+      await deleteDoc(doc(db, "users", currentUser.uid));
+
+      // Por último, deletar a conta do Authentication
+      await deleteUser(currentUser);
+
+      // Redirecionar para login após sucesso
+      navigate('/login');
+    } catch (error) {
+      console.error('Erro ao deletar conta:', error);
+      setError("Erro ao deletar conta: " + error.message);
+    } finally {
+      setLoading(false);
     }
   };
 
   if (loading) {
-    return (
-      <div className="editar-perfil-container">
-        <div className="loading">Carregando...</div>
-      </div>
-    );
+    return <div className="loading-spinner">Carregando...</div>;
   }
 
   return (
@@ -144,11 +113,6 @@ function EditarPerfil() {
       <BackButton />
       <div className="editar-perfil-box">
         <h2>Editar Perfil</h2>
-        {!isOnline && (
-          <div className="offline-warning">
-            Você está offline. Algumas funcionalidades podem estar indisponíveis.
-          </div>
-        )}
         {error && <div className="error-message">{error}</div>}
         
         <form onSubmit={handleSubmit}>
@@ -157,8 +121,8 @@ function EditarPerfil() {
             <input
               type="email"
               id="email"
-              value={novoEmail}
-              onChange={(e) => setNovoEmail(e.target.value)}
+              value={formData.email}
+              onChange={(e) => setFormData({...formData, email: e.target.value})}
               required
             />
           </div>
@@ -168,42 +132,29 @@ function EditarPerfil() {
             <input
               type="tel"
               id="telefone"
-              value={telefone}
-              onChange={(e) => setTelefone(e.target.value)}
+              value={formData.telefone}
+              onChange={(e) => setFormData({...formData, telefone: e.target.value})}
               required
             />
           </div>
           
-          <button type="submit" className="btn-salvar">
-            Salvar Alterações
+          <button type="submit" className="btn-salvar" disabled={loading}>
+            {loading ? 'Salvando...' : 'Salvar Alterações'}
           </button>
         </form>
 
-        {!showConfirmDelete ? (
-          <button 
-            onClick={() => setShowConfirmDelete(true)}
-            className="btn-deletar"
-          >
-            Deletar Conta
-          </button>
-        ) : (
-          <div className="confirm-delete">
-            <p>Tem certeza que deseja deletar sua conta?</p>
-            <div className="confirm-delete-buttons">
-              <button 
-                onClick={handleDeleteAccount}
-                className="btn-confirmar-delete"
-              >
-                Sim, deletar
-              </button>
-              <button 
-                onClick={() => setShowConfirmDelete(false)}
-                className="btn-cancelar"
-              >
-                Cancelar
-              </button>
-            </div>
-          </div>
+        <button 
+          className="delete-account-btn"
+          onClick={() => setShowConfirmDelete(true)}
+        >
+          Deletar Conta
+        </button>
+
+        {showConfirmDelete && (
+          <ConfirmDeleteModal
+            onConfirm={handleDeleteAccount}
+            onCancel={() => setShowConfirmDelete(false)}
+          />
         )}
       </div>
     </div>

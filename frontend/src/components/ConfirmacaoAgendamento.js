@@ -24,9 +24,14 @@ function ConfirmacaoAgendamento({ servico, data, horario, onClose }) {
             <p><strong>Horário:</strong> {horario}</p>
           </div>
 
-          <button onClick={handleClose} className="btn-fechar">
-            Voltar para Home
-          </button>
+          <div className="confirmacao-buttons">
+            <button onClick={() => navigate('/meus-agendamentos')} className="btn-ver-agendamentos">
+              Ver Meus Agendamentos
+            </button>
+            <button onClick={handleClose} className="btn-fechar">
+              Voltar para Home
+            </button>
+          </div>
         </div>
       </div>
     </div>

@@ -1,18 +1,25 @@
+@import './variables.css';
+
 .agendamento-container {
   min-height: 100vh;
   display: flex;
   align-items: center;
   justify-content: center;
-  background-color: #06121E;
-  padding: 20px;
+  background-color: var(--background-dark);
+  padding: var(--spacing-xl);
+  position: relative;
+  z-index: 1;
 }
 
 .agendamento-box {
-  background-color: white;
-  padding: 2rem;
-  border-radius: 8px;
+  background-color: var(--text-light);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius);
   width: 100%;
   max-width: 400px;
+  box-shadow: var(--box-shadow);
+  position: relative;
+  z-index: 2;
 }
 
 .agendamento-box h2 {
@@ -22,7 +29,8 @@
 }
 
 .form-group {
-  margin-bottom: 1rem;
+  margin-bottom: 1.5rem;
+  position: relative;
 }
 
 .form-group select,
@@ -32,6 +40,10 @@
   border: 1px solid #ddd;
   border-radius: 4px;
   font-size: 1rem;
+  background-color: var(--text-light);
+  color: var(--text-dark);
+  position: relative;
+  z-index: 3;
 }
 
 .error-message {
@@ -56,4 +68,42 @@ button[type="submit"] {
 
 button[type="submit"]:hover {
   background-color: #c13030;
-} 
+}
+
+/* Ajuste específico para o input de data */
+input[type="date"] {
+  appearance: none;
+  -webkit-appearance: none;
+  background-color: var(--text-light);
+  padding: 0.8rem;
+  color: var(--text-dark);
+}
+
+/* Ajuste para o calendário nativo */
+input[type="date"]::-webkit-calendar-picker-indicator {
+  background-color: var(--text-light);
+  padding: 0.2rem;
+  cursor: pointer;
+  position: relative;
+  z-index: 4;
+}
+
+/* Estilo para placeholder e options */
+.form-group select option {
+  color: var(--text-dark);
+  background-color: var(--text-light);
+}
+
+/* Ajuste para quando o input está vazio */
+input:not(:valid),
+select:not(:valid) {
+  color: #757575;
+}
+
+/* Ajuste para o texto selecionado */
+input::selection,
+select::selection {
+  background-color: var(--primary-color);
+  color: var(--text-light);
+}
+ 

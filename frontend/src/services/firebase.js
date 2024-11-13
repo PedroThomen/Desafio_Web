@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
 import { getAuth, GoogleAuthProvider } from 'firebase/auth';
-import { getFirestore } from 'firebase/firestore';
+import { getFirestore, doc, setDoc } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCjQ4-VMpKz5rMXwiBvvRYdeJGVCUS30SU",
@@ -16,9 +16,26 @@ const auth = getAuth(app);
 const db = getFirestore(app);
 const googleProvider = new GoogleAuthProvider();
 
-// Configurações adicionais do provedor Google
 googleProvider.setCustomParameters({
   prompt: 'select_account'
 });
+
+// Configuração dos índices usando a sintaxe correta do Firestore v9
+const setupIndexes = async () => {
+  try {
+    const indexesDocRef = doc(db, 'agendamentos', '--indexes--');
+    await setDoc(indexesDocRef, {
+      byClienteId: true,
+      byDataHorario: true
+    });
+  } catch (error) {
+    console.error('Erro ao configurar índices:', error);
+  }
+};
+
+// Executar setup apenas em ambiente de desenvolvimento
+if (process.env.NODE_ENV === 'development') {
+  setupIndexes();
+}
 
 export { auth, db, googleProvider };

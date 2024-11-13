@@ -65,8 +65,8 @@ function Home() {
                       <i className="fa-solid fa-pen"></i>
                     </Link>
                   </div>
-                  <Link to="/agendamento" className="header-button">
-                    Agendar
+                  <Link to="/meus-agendamentos" className="header-button">
+                    Agendamentos
                   </Link>
                   <LogoutButton />
                 </>

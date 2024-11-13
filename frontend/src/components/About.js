@@ -18,7 +18,13 @@ function About() {
           data-aos-delay="250"
         >
           <h2>Sobre</h2>
-          <p>Lorem ipsum dolor sit amet consectetur. Ornare eget pellentesque proin risus. Orci proin morbi vestibulum convallis leo vestibulum mus.</p>
+          <p>
+            Bem-vindo à nossa barbearia especializada em estilos masculinos. Com mais de 10 anos 
+            de experiência, oferecemos cortes modernos, degradês precisos e barbas impecáveis. 
+            Nossa equipe de barbeiros especializados está pronta para transformar seu visual com 
+            técnicas tradicionais e tendências contemporâneas. Aqui, cada corte é uma obra de arte, 
+            e cada cliente recebe um atendimento personalizado para destacar sua personalidade.
+          </p>
           <p>Horário de funcionamento: <strong>09:00</strong> às <strong>19:00</strong></p>
         </div>
       </div>

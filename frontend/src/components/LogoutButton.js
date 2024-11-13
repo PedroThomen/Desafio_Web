@@ -13,6 +13,12 @@ function LogoutButton() {
       await signOut(auth);
       removeCookie('authToken');
       removeCookie('userEmail');
+      
+      await fetch('/api/users/logout', {
+        method: 'POST',
+        credentials: 'include'
+      });
+      
       navigate('/');
     } catch (error) {
       console.error('Erro ao fazer logout:', error);

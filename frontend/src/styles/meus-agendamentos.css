@@ -1,0 +1,88 @@
+@import './variables.css';
+
+.meus-agendamentos-container {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: var(--background-dark);
+  padding: var(--spacing-xl);
+}
+
+.meus-agendamentos-box {
+  background-color: var(--text-light);
+  padding: var(--spacing-xl);
+  border-radius: var(--border-radius);
+  width: 100%;
+  max-width: 600px;
+  box-shadow: var(--box-shadow);
+}
+
+.meus-agendamentos-box h2 {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-dark);
+}
+
+.agendamentos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.agendamento-card {
+  background-color: #f8f9fa;
+  border-radius: var(--border-radius);
+  padding: var(--spacing-md);
+  border-left: 4px solid var(--primary-color);
+}
+
+.agendamento-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 0.5rem;
+}
+
+.agendamento-header h3 {
+  color: var(--text-dark);
+  font-size: 1.1rem;
+}
+
+.status {
+  padding: 0.25rem 0.5rem;
+  border-radius: 4px;
+  font-size: 0.875rem;
+  font-weight: 500;
+}
+
+.status.pendente {
+  background-color: var(--warning-bg);
+  color: var(--warning-text);
+}
+
+.status.confirmado {
+  background-color: var(--success-bg);
+  color: var(--text-light);
+}
+
+.status.cancelado {
+  background-color: var(--error-bg);
+  color: var(--error-text);
+}
+
+.agendamento-info {
+  color: var(--text-dark);
+}
+
+.no-agendamentos {
+  text-align: center;
+  color: var(--text-dark);
+  padding: var(--spacing-lg);
+}
+
+.loading {
+  text-align: center;
+  color: var(--text-dark);
+  padding: var(--spacing-lg);
+} 
