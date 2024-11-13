@@ -1,10 +1,13 @@
+import React from 'react';
 import { Navigate } from 'react-router-dom';
-import { auth } from '../services/firebase';
+import { useAuth } from '../contexts/AuthContext';
+import { getCookie } from '../services/cookieService';
 
 function PrivateRoute({ children }) {
-  const user = auth.currentUser;
+  const { user } = useAuth();
+  const authToken = getCookie('authToken');
 
-  if (!user) {
+  if (!user && !authToken) {
     return <Navigate to="/login" />;
   }
 

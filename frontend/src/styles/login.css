@@ -1,84 +1,108 @@
 .login-container {
-    display: flex;
-    justify-content: center;
-    align-items: center;
     min-height: 100vh;
-    background-color: #f5f5f5;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color: #06121E;
     padding: 20px;
 }
 
 .login-box {
-    background: white;
-    padding: 2rem;
+    background-color: #030B12;
+    padding: 40px;
     border-radius: 8px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.1);
     width: 100%;
     max-width: 400px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
 }
 
 .login-box h2 {
+    color: #FFF;
     text-align: center;
-    margin-bottom: 2rem;
-    color: #333;
+    margin-bottom: 30px;
+    font-size: 28px;
 }
 
 .form-group {
-    margin-bottom: 1rem;
+    margin-bottom: 20px;
 }
 
-input {
+.form-group input {
     width: 100%;
-    padding: 0.8rem;
-    border: 1px solid #ddd;
+    padding: 12px;
+    border: 1px solid #1B2B3B;
     border-radius: 4px;
-    font-size: 1rem;
+    background-color: #0C1824;
+    color: #FFF;
+    font-size: 16px;
 }
 
-input:focus {
+.form-group input:focus {
     outline: none;
-    border-color: #4a90e2;
+    border-color: #D94140;
 }
 
-button {
+.btn-primary {
     width: 100%;
-    padding: 0.8rem;
-    background-color: #4a90e2;
-    color: white;
+    padding: 12px;
+    background-color: #D94140;
+    color: #FFF;
     border: none;
     border-radius: 4px;
-    font-size: 1rem;
+    font-size: 16px;
     cursor: pointer;
-    transition: background-color 0.2s;
+    margin-bottom: 15px;
+    transition: background-color 0.3s;
 }
 
-button:hover {
-    background-color: #357abd;
+.btn-primary:hover {
+    background-color: #B73534;
 }
 
-button:disabled {
-    background-color: #cccccc;
-    cursor: not-allowed;
+.btn-google {
+    width: 100%;
+    padding: 12px;
+    background-color: #1B2B3B;
+    color: #FFF;
+    border: none;
+    border-radius: 4px;
+    font-size: 16px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn-google:hover {
+    background-color: #243B52;
 }
 
 .error-message {
-    color: #dc3545;
-    text-align: center;
-    margin-bottom: 1rem;
-    padding: 0.5rem;
-    background-color: #f8d7da;
+    background-color: #D94140;
+    color: #FFF;
+    padding: 10px;
     border-radius: 4px;
+    margin-bottom: 20px;
+    text-align: center;
 }
 
-.toggle-button {
-    margin-top: 1rem;
-    background: transparent;
-    color: #4a90e2;
+.toggle-form {
+    color: #FFF;
+    text-align: center;
+    margin-top: 20px;
+}
+
+.btn-link {
+    background: none;
     border: none;
-    font-size: 0.9rem;
+    color: #D94140;
+    cursor: pointer;
+    margin-left: 5px;
+    font-size: 16px;
 }
 
-.toggle-button:hover {
-    background: transparent;
-    color: #357abd;
+.btn-link:hover {
     text-decoration: underline;
 } 

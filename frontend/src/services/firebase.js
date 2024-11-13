@@ -1,6 +1,6 @@
 import { initializeApp } from 'firebase/app';
-import { getAuth } from 'firebase/auth';
-import { initializeFirestore } from 'firebase/firestore';
+import { getAuth, GoogleAuthProvider } from 'firebase/auth';
+import { getFirestore } from 'firebase/firestore';
 
 const firebaseConfig = {
   apiKey: "AIzaSyCjQ4-VMpKz5rMXwiBvvRYdeJGVCUS30SU",
@@ -11,12 +11,14 @@ const firebaseConfig = {
   appId: "1:847828199008:web:62c9fafda3fbe0b0228505"
 };
 
-const firebaseApp = initializeApp(firebaseConfig);
+const app = initializeApp(firebaseConfig);
+const auth = getAuth(app);
+const db = getFirestore(app);
+const googleProvider = new GoogleAuthProvider();
 
-const auth = getAuth(firebaseApp);
-const db = initializeFirestore(firebaseApp, {
-  experimentalForceLongPolling: true,
-  useFetchStreams: false,
+// Configurações adicionais do provedor Google
+googleProvider.setCustomParameters({
+  prompt: 'select_account'
 });
 
-export { auth, db, firebaseApp }; 
+export { auth, db, googleProvider };

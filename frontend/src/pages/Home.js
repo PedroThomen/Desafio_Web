@@ -50,7 +50,7 @@ function Home() {
                 data-aos="flip-up"
                 data-aos-delay="300"
                 data-aos-duration="1500"
-                src="/assets/logo.svg" 
+                src={process.env.PUBLIC_URL + '/assets/logo.svg'} 
                 alt="Logo da barbearia"
               />
             </div>
