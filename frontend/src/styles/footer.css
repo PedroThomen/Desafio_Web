@@ -1,0 +1,28 @@
+.footer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 54px 0;
+  gap: 24px;
+  color: #FFF;
+  background-color: #06121e;
+}
+
+.footer-icons {
+  display: flex;
+  gap: 8px;
+}
+
+.footer-icons a i {
+  color: #FFF;
+  transition: color 0.3s;
+}
+
+.footer-icons a:hover i {
+  color: #d34040;
+}
+
+.footer img {
+  width: 150px;
+} 

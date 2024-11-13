@@ -1,0 +1,33 @@
+.header-content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 1rem;
+
+  .header-icons {
+    display: flex;
+    gap: 1rem;
+
+    a {
+      color: $white-normal;
+      transition: 0.3s;
+
+      &:hover {
+        color: $secondary-light;
+      }
+    }
+  }
+
+  .header-button {
+    padding: 10px 30px;
+    border: 1px solid $white-normal;
+    color: $white-normal;
+    border-radius: 4px;
+    transition: 0.3s;
+
+    &:hover {
+      background-color: $white-normal;
+      color: $primary-normal;
+    }
+  }
+} 
